@@ -1,4 +1,6 @@
-<img src="KadeEngineWitBackground.png" width="600" height="400">
+<p align="center">
+<img src="KadeEngineWitBackground.png" width="70%" height="70%">
+</p>
 
 # VS DAVE (DAVE ENGINE)
 this is dave
