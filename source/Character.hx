@@ -2789,7 +2789,7 @@ class Character extends FlxSprite
 				
 				loadOffsetFile(curCharacter);
 				
-				globalOffset = [0, -30];
+				globalOffset = [0, 0];
 				barColor = FlxColor.fromRGB(153, 102, 204);
 
 				playAnim('idle');
