@@ -57,7 +57,8 @@ jobs:
         run: |
           haxelib setup C:/haxelib
           haxelib install hxcpp > nul
-          sh .\"Bulid.sh"
+          chmod +x ./Bulid.sh
+          sh ./Bulid.sh
         shell: cmd
       - name: Create Version Tag
         run: echo "${{github.run_id}}" > VERSION
@@ -83,7 +84,8 @@ jobs:
         run: |
           haxelib setup C:/haxelib
           haxelib install hxcpp > nul
-          sh .\"Bulid.sh"
+          chmod +x ./Bulid.sh
+          sh ./Bulid.sh
         shell: cmd
       - name: Create Version Tag
         run: echo "${{github.run_id}}" > VERSION
