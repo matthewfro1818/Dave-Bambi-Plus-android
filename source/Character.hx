@@ -14,44 +14,6 @@ import haxe.format.JsonParser;
 
 using StringTools;
 
-typedef CharacterFile =
-{
-	var animations:Array<Anim>;
-	var globalOffset:Array<Float>;
-	var isPlayable:Bool;
-	var skins:Array<SkinSet>;
-	var barcolor:RGB;
-    var	antialiasing:Bool;
-	var	iconAntialiasing:Bool;
-	var nativelyPlayable:Bool;
-	var flipX:Bool;
-	var updateHitbox:Bool;
-	var setGraphicSize:String;
-	var effect:String;
-	var cameraPosition:Array<Float>;
-}
-
-typedef Anim = 
-{
-	var animName:String;
-	var anim:String;
-	var fps:Int;
-	var loop:Bool;
-}
-
-typedef SkinSet = 
-{
-	var type:String;
-	var replacement:String;
-}
-
-typedef RGB = 
-{
-	var red:Int;
-	var green:Int;
-	var blue:Int;
-}
-
 class Character extends FlxSprite
 {
 	public var animOffsets:Map<String, Array<Dynamic>>;
@@ -1511,166 +1473,6 @@ class Character extends FlxSprite
 				loadOffsetFile(curCharacter);
 
 				playAnim('idle');
-
-				default:
-					var customPath:String = '';
-					var customPath2:String = '';
-					if (FileSystem.exists(TitleState.modFolder + '/data/characters/${curCharacter}.json')) {
-                   customPath = TitleState.modFolder + '/data/characters/${curCharacter}.json';
-				   customPath2 = TitleState.modFolder + '/images/characters/' + curCharacter;
-					} else if (FileSystem.exists('mods/global/characters/${curCharacter}.json')) {
-						customPath = 'mods/global/characters/${curCharacter}.json';
-						customPath2 = 'mods/global/images/' + curCharacter;
-					}
-
-                 if (customPath != '' && customPath2 != '') {
-				rawJsonCustom = File.getContent(customPath);
-			    jsonCustom = cast Json.parse(rawJsonCustom);
-
-				frames = Paths.getCustomSparrowAtlas(customPath2);
-
-				isCustom = true;
-
-				//trace('BEFORE BEFORE json: ${jsonCustom.cameraPosition} camPos: ${cameraPos}');
-
-				if (jsonCustom.cameraPosition != null) {
-				cameraPos = jsonCustom.cameraPosition;
-				}
-
-				//trace('BEFORE json: ${jsonCustom.cameraPosition} camPos: ${cameraPos}');
-				
-				if (cameraPos == null) {
-          cameraPos = [0,0];
-				}
-
-				//trace('AFTER json: ${jsonCustom.cameraPosition} camPos: ${cameraPos}');
-
-				for (i in jsonCustom.animations) {
-				animation.addByPrefix(i.animName, i.anim, i.fps, i.loop);
-				}
-			
-                 if (!jsonCustom.isPlayable) {
-				loadCustomOffsetFile(curCharacter);
-				 } else {
-				loadCustomOffsetFile(curCharacter + (isPlayer ? '-playable' : ''));
-				 }
-
-				globalOffset = jsonCustom.globalOffset;
-
-				for (i in jsonCustom.skins) {
-				skins.set(i.type, i.replacement);
-				}
-
-				barColor = FlxColor.fromRGB(jsonCustom.barcolor.red, jsonCustom.barcolor.green, jsonCustom.barcolor.blue);
-
-				if (jsonCustom.setGraphicSize != null && jsonCustom.setGraphicSize != '') 
-					{
-						var thing = jsonCustom.setGraphicSize;
-						if (thing == 'furiosityScale') {
-						setGraphicSize(Std.int((width * 1.3) / furiosityScale));
-						} else if (thing == 'daPixelZoom') {
-						setGraphicSize(Std.int(width * PlayState.daPixelZoom));
-						}else {
-						setGraphicSize(Std.int(width * Std.parseInt(thing)));
-						}
-					}
-
-					if (jsonCustom.effect != null && jsonCustom.effect != '') 
-						{
-							var funnyeffect = jsonCustom.effect;
-							if (funnyeffect == '3dfloat' && !PlayState.funnyFloatyBoys.contains(curCharacter) && !Note.CharactersWith3D.contains(curCharacter)) {
-							PlayState.funnyFloatyBoys.push(curCharacter);
-							Note.CharactersWith3D.push(curCharacter);
-							if (PlayState.floatyBoysMod.contains(curCharacter)) {
-							PlayState.floatyBoysMod.remove(curCharacter);
-							}
-							if (PlayState.threedBoysMod.contains(curCharacter)) {
-								PlayState.threedBoysMod.remove(curCharacter);
-								}
-							} else if (funnyeffect == 'float'  && !PlayState.floatyBoysMod.contains(curCharacter)) {
-							PlayState.floatyBoysMod.push(curCharacter);
-
-							if (PlayState.funnyFloatyBoys.contains(curCharacter)) {
-								PlayState.funnyFloatyBoys.remove(curCharacter);
-								Note.CharactersWith3D.remove(curCharacter);
-								}
-								if (PlayState.threedBoysMod.contains(curCharacter)) {
-									PlayState.threedBoysMod.remove(curCharacter);
-									Note.CharactersWith3D.remove(curCharacter);
-									}
-						} else if (funnyeffect == '3d' && !PlayState.threedBoysMod.contains(curCharacter) && !Note.CharactersWith3D.contains(curCharacter)) {
-							PlayState.threedBoysMod.push(curCharacter);
-							Note.CharactersWith3D.push(curCharacter);
-
-							if (PlayState.funnyFloatyBoys.contains(curCharacter)) {
-								PlayState.funnyFloatyBoys.remove(curCharacter);
-								}
-								if (PlayState.floatyBoysMod.contains(curCharacter)) {
-									PlayState.floatyBoysMod.remove(curCharacter);
-									}
-						}
- 					}
-
-				if (jsonCustom.updateHitbox)
-					{
-					updateHitbox();
-					}
-
-				nativelyPlayable = jsonCustom.nativelyPlayable;
-
-				antialiasing = jsonCustom.antialiasing ? FlxG.save.data.antialiasing : jsonCustom.antialiasing;
-
-				if (!jsonCustom.iconAntialiasing) {
-				HealthIcon.noAaChars.push(curCharacter);
-				} else {
-				if (HealthIcon.noAaChars.contains(curCharacter)) {
-					HealthIcon.noAaChars.remove(curCharacter);	
-				}
-				}
-
-				
-
-				flipX = jsonCustom.flipX;
-				
-				playAnim('idle');
-					
-
-					} else {
-
-				frames = Paths.getSparrowAtlas('characters/BOYFRIEND', 'shared');
-				
-				animation.addByPrefix('idle', 'BF idle dance', 24, false);
-				animation.addByPrefix('singUP', 'BF NOTE UP0', 24, false);
-				animation.addByPrefix('singLEFT', 'BF NOTE LEFT0', 24, false);
-				animation.addByPrefix('singRIGHT', 'BF NOTE RIGHT0', 24, false);
-				animation.addByPrefix('singDOWN', 'BF NOTE DOWN0', 24, false);
-				animation.addByPrefix('singUPmiss', 'BF NOTE UP MISS', 24, false);
-				animation.addByPrefix('singLEFTmiss', 'BF NOTE LEFT MISS', 24, false);
-				animation.addByPrefix('singRIGHTmiss', 'BF NOTE RIGHT MISS', 24, false);
-				animation.addByPrefix('singDOWNmiss', 'BF NOTE DOWN MISS', 24, false);
-				animation.addByPrefix('hey', 'BF HEY', 24, false);
-
-				animation.addByPrefix('firstDeath', "BF dies", 24, false);
-				animation.addByPrefix('deathLoop', "BF Dead Loop", 24, true);
-				animation.addByPrefix('deathConfirm', "BF Dead confirm", 24, false);
-				animation.addByPrefix('dodge', "boyfriend dodge", 24, false);
-				animation.addByPrefix('scared', 'BF idle shaking', 24);
-				animation.addByPrefix('hit', 'BF hit', 24, false);
-
-				loadOffsetFile('bf');
-
-				skins.set('gfSkin', 'gf');
-				skins.set('3d', 'bf-3d');
-
-				barColor = FlxColor.fromRGB(49, 176, 209);
-       
-
-				playAnim('idle');
-
-				nativelyPlayable = true;
-
-				flipX = true;
-					}
 		}
 		dance();
 
@@ -1682,12 +1484,7 @@ class Character extends FlxSprite
 
 	function loadOffsetFile(character:String)
 	{
-		var offsetStuffs:Array<String>;
-		if (FileSystem.exists(Paths.offsetFile(character))) {
-	    offsetStuffs = CoolUtil.coolTextFile(Paths.offsetFile(character));
-		} else {
-		offsetStuffs = CoolUtil.coolTextFile(Paths.offsetFile('bf'));
-		}
+		var offsetStuffs:Array<String> = CoolUtil.coolTextFile(Paths.offsetFile(character));
 		
 		for (offsetText in offsetStuffs)
 		{
@@ -1697,41 +1494,6 @@ class Character extends FlxSprite
 		}
 	}
 
-	function loadCustomOffsetFile(character:String)
-		{
-			var offsetStuffs:Array<String>;
-
-			if (FileSystem.exists(TitleState.modFolder + '/offsets/' + character + '.txt')) {
-				offsetStuffs = CoolUtil.coolTextFile(TitleState.modFolder + '/offsets/' + character + '.txt');
-				} else {
-				offsetStuffs = CoolUtil.coolTextFile(Paths.offsetFile('bf'));
-				}
-			
-			for (offsetText in offsetStuffs)
-			{
-				var offsetInfo:Array<String> = offsetText.split(' ');
-	
-				addOffset(offsetInfo[0], Std.parseFloat(offsetInfo[1]), Std.parseFloat(offsetInfo[2]));
-			}
-		}
-
-		function loadSkinOffsetFile(character:String)
-			{
-				var offsetStuffs:Array<String>;
-
-				if (FileSystem.exists('mods/global/offsets/' + character + '.txt')) {
-					offsetStuffs = CoolUtil.coolTextFile('mods/global/offsets/' + character + '.txt');
-					} else {
-					offsetStuffs = CoolUtil.coolTextFile(Paths.offsetFile('bf'));
-					}
-				
-				for (offsetText in offsetStuffs)
-				{
-					var offsetInfo:Array<String> = offsetText.split(' ');
-		
-					addOffset(offsetInfo[0], Std.parseFloat(offsetInfo[1]), Std.parseFloat(offsetInfo[2]));
-				}
-			}
 	override function update(elapsed:Float)
 	{
 		if (animation == null)
