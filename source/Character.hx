@@ -37,9 +37,6 @@ class Character extends FlxSprite
 	public var cameraPos:Array<Float> = [0,0];
 	
 	public var canSing:Bool = true;
-	public var skins:Map<String, String> = new Map<String, String>();
-	public var rawJsonCustom:String;
-    public var jsonCustom:CharacterFile;
 
 	public function new(x:Float, y:Float, ?character:String = "bf", ?isPlayer:Bool = false)
 	{
