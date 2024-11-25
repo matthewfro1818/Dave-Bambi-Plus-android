@@ -129,6 +129,37 @@ class Character extends FlxSprite
 
 				flipX = true;
 
+			case 'bf-chip':
+				frames = Paths.getSparrowAtlas('chipflake/BOYFRIEND', 'shared');
+				
+				animation.addByPrefix('idle', 'BF idle dance0', 24, false);
+				animation.addByPrefix('singUP', 'BF NOTE UP0', 24, false);
+				animation.addByPrefix('singLEFT', 'BF NOTE RIGHT0', 24, false);
+				animation.addByPrefix('singRIGHT', 'BF NOTE LEFT0', 24, false);
+				animation.addByPrefix('singDOWN', 'BF NOTE DOWN0', 24, false);
+				animation.addByPrefix('singUPmiss', 'BF NOTE UP MISS', 24, false);
+				animation.addByPrefix('singLEFTmiss', 'BF NOTE RIGHT MISS', 24, false);
+				animation.addByPrefix('singRIGHTmiss', 'BF NOTE LEFT MISS', 24, false);
+				animation.addByPrefix('singDOWNmiss', 'BF NOTE DOWN MISS', 24, false);
+				animation.addByPrefix('hey', 'BF HEY', 24, false);
+
+				animation.addByPrefix('firstDeath', "BF dies", 24, false);
+				animation.addByPrefix('deathLoop', "BF Dead Loop", 24, true);
+				animation.addByPrefix('deathConfirm', "BF Dead confirm", 24, false);
+				animation.addByPrefix('dodge', "boyfriend dodge", 24, false);
+				animation.addByPrefix('scared', 'BF idle shaking', 24);
+				animation.addByPrefix('hit', 'BF hit', 24, false);
+
+				loadOffsetFile(curCharacter);
+
+				globalOffset = [0, 75];
+				barColor = FlxColor.fromRGB(255, 255, 255);
+
+				playAnim('idle');
+
+				nativelyPlayable = true;
+
+				flipX = false;
 			case 'blue-bf-minus':
 				frames = Paths.getSparrowAtlas('characters/bluebfminus', 'shared');
 				
